@@ -1,0 +1,52 @@
+service: todo-list-lambda
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  timeout: 60
+  environment:
+    TODOS_TABLE: Todos
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:us-east-1:*:table/Todos
+
+functions:
+  app:
+    handler: app.ToDohandler
+    events:
+      - http:
+          path: todos
+          method: get
+      - http:
+          path: todos/{id}
+          method: get
+      - http:
+          path: todos
+          method: post
+      - http:
+          path: todos/{id}
+          method: patch
+      - http:
+          path: todos/{id}
+          method: delete
+
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Todos
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
