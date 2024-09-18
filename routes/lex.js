@@ -1,10 +1,10 @@
 const express = require("express");
-
-const lexController = require("../controllers/lex");
+const lexController = require("../controllers/lex/lex");
 
 const router = express.Router();
 
-app.post("/lex-fulfillment", async (req, res) => {
+// Define the route for Lex fulfillment
+router.post("/fulfillment", async (req, res) => {
   try {
     const lexResponse = await lexController.handleLexRequest(req.body);
     res.json(lexResponse);

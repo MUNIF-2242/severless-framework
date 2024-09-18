@@ -37,7 +37,7 @@ functions:
           path: todos/{id}
           method: delete
       - http:
-          path: lex-fulfillment
+          path: lex/fulfillment
           method: post
 
 resources:
