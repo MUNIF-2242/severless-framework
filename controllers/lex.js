@@ -8,10 +8,12 @@ exports.handleLexRequest = async (event) => {
     const intentName = event.currentIntent.name;
 
     switch (intentName) {
+      case "GreetUser":
+        return await handleGreetUser(event);
       case "GetTodosForDate": // Handle by date
         return await handleGetTodosForDate(event);
-      case "GetTodosByKeyword": // If you want to use "GetTodosByKeyword"
-        return await handleGetTodosByKeyword(event); // You can reuse the same handler if the logic is the same
+      case "GetTodosByKeyword": // Handle by keyword
+        return await handleGetTodosByKeyword(event);
       default:
         return close("Failed", "Sorry, I didn't understand that request.");
     }
@@ -47,6 +49,19 @@ const handleGetTodosByKeyword = async (event) => {
     console.error("DynamoDB Error:", error);
     return close("Failed", "I couldn't retrieve your todos at the moment.");
   }
+};
+
+// Handle "GreetUser" intent
+const handleGreetUser = async (event) => {
+  const userName = event.currentIntent.slots.UserName; // User's name slot
+
+  if (!userName) {
+    // If userName slot is empty, ask for user's name
+    return close("Fulfilled", "Hello! What's your name?");
+  }
+
+  // If userName is provided, greet the user and proceed
+  return close("Fulfilled", `Hello ${userName}! How can I assist you today?`);
 };
 
 // Handle "GetTodosForDate" intent
